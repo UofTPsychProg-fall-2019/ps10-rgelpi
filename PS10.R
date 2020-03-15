@@ -95,15 +95,14 @@ ggsave('figures/Q2b.pdf',units='in',width=4,height=5)
 # the default range on the y-axis will be very large given the range of the data
 # add a +coord_cartesian(ylim = c(10, 12)) to rescale it.
 
-Q3 <- ipip %>% ggplot(aes(x = exer, y = logMedInc, fill = gender, color = gender)) + 
+Q3 <- ipip %>% ggplot(aes(x = gender, y = logMedInc, fill = exer, color = exer)) + 
     stat_summary(fun.y = mean, geom = "bar", position = position_dodge(0.9)) +
     stat_summary(fun.data = mean_cl_boot, geom = "errorbar", width = 0.3, position = position_dodge(0.9)) + 
     coord_cartesian(ylim = c(10,12)) +
-    xlab("Amount of exercise") +
-    scale_x_discrete(labels = c("Rarely or never", "< 1/month", "< 1/week", "1-2/week", "3-5/week", "< 5/week")) +
+    scale_fill_brewer("Amount of exercise", labels = c("Rarely or never", "< 1/month", "< 1/week", "1-2/week", "3-5/week", "< 5/week"), palette = 'Set2') +
+    scale_color_brewer("Amount of exercise", labels = c("Rarely or never", "< 1/month", "< 1/week", "1-2/week", "3-5/week", "< 5/week"), palette = 'Dark2') +
     ylab("Log of median income") + theme_classic() + 
-    scale_fill_manual("Gender", labels = c("Female", "Male"), values = alpha(c("red3", "turquoise"), .3)) +
-    scale_colour_manual("Gender", labels = c("Female", "Male"), values = c("red3", "turquoise"))
+    scale_x_discrete("Gender", labels = c("Female", "Male"))
 Q3
 ggsave('figures/Q3.pdf',units='in',width=4,height=5)
 
@@ -114,12 +113,13 @@ ggsave('figures/Q3.pdf',units='in',width=4,height=5)
 # this is a lot to visualize in a single plot! use +facet_wrap(vars(trait)) to generate seperate plots for each personality trait
 
 ipip.l$trait %<>% factor(levels = c("O", "C", "E", "A", "N"))
-Q4 <- ipip.l %>% ggplot(aes(gender, value, fill=gender, color=gender)) + 
+Q4 <- ipip.l %>% ggplot(aes(BMI_cat, value, color=gender)) + 
     stat_summary(fun.y = mean, geom = "point", position = position_dodge(0.9)) + 
     stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = position_dodge(0.9)) +
     coord_cartesian(ylim=c(3,5)) +
     facet_wrap(vars(trait)) +
-    theme(legend.position = "none")
+    scale_colour_manual("Gender", labels = c("Female", "Male"), values = c("red3", "turquoise")) +
+    theme_classic()
 Q4
 ggsave('figures/Q4.pdf',units='in',width=4,height=5)
 
